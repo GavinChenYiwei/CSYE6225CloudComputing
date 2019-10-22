@@ -39,7 +39,7 @@ public class ProfessorsService {
         //Create a Professor Object
         Professor prof = new Professor(firstName+lastName, firstName , lastName,
                 department, joiningDate.toString());
-
+        prof.setId(String.valueOf(nextAvailableId));
         prof_Map.put(nextAvailableId, prof);
 
         return prof_Map.get(nextAvailableId);
@@ -50,7 +50,7 @@ public class ProfessorsService {
     public Professor getProfessor(String profId) {
 
         //Simple HashKey Load
-        Professor prof2 = prof_Map.get(profId);
+        Professor prof2 = prof_Map.get(Long.valueOf(profId));
         System.out.println("Item retrieved:");
         System.out.println(prof2.toString());
 
@@ -66,9 +66,14 @@ public class ProfessorsService {
 
     // Updating Professor Info
     public Professor updateProfessorInformation(String profId, Professor prof) {
-        Professor oldProfObject = prof_Map.get(profId);
-        profId = oldProfObject.getProfessorId();
-        prof.setProfessorId(profId);
+        Professor oldProfObject = prof_Map.get(Long.valueOf(profId));
+//        profId = oldProfObject.getProfessorId();
+//        prof.setProfessorId(profId);
+        oldProfObject.setFirstName(prof.getFirstName());
+        oldProfObject.setLastName(prof.getLastName());
+        oldProfObject.setProfessorId(prof.getFirstName()+prof.getLastName());
+        oldProfObject.setJoiningDate(prof.getJoiningDate());
+        oldProfObject.setDepartment(prof.getDepartment());
         return prof;
     }
 

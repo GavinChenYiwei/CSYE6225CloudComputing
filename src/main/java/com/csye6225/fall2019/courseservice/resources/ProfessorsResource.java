@@ -22,6 +22,7 @@ import com.csye6225.fall2019.courseservice.datamodel.Professor;
 import com.csye6225.fall2019.courseservice.service.ProfessorsService;
 import org.glassfish.hk2.api.PerThread;
 
+//../webapi/professors
 @Path("/professors")
 public class ProfessorsResource {
 
@@ -33,6 +34,7 @@ public class ProfessorsResource {
         return profService.getAllProfessors();
     }
 
+    //../webapi/professors/department/{departmentID}
     @GET
     @Path("/department/{departmentID}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -46,7 +48,7 @@ public class ProfessorsResource {
 
     }
 
-    // ... webapi/professor/1
+    // ... webapi/professors/1
     @GET
     @Path("/{professorId}")
     @Produces(MediaType.APPLICATION_JSON)

@@ -14,7 +14,7 @@ public class Professor {
 
     public Professor(String professorId, String firstName,
                      String lastName, String department, String joiningDate) {
-        //this.setId(professorId);
+//        this.setId(professorId);
         this.professorId = professorId;
         this.firstName = firstName;
         this.lastName = lastName;
