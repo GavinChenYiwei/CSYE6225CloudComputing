@@ -23,7 +23,7 @@ import com.csye6225.fall2019.courseservice.service.ProfessorsService;
 import org.glassfish.hk2.api.PerThread;
 
 //../webapi/professors
-@Path("/professors")
+@Path("professors")
 public class ProfessorsResource {
 
     ProfessorsService profService = new ProfessorsService();

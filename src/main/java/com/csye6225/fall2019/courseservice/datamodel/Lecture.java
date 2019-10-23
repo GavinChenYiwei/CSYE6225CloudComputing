@@ -2,6 +2,7 @@ package com.csye6225.fall2019.courseservice.datamodel;
 
 public class Lecture {
 
+    private String id;
     private String note;
     private String material;
 
@@ -27,5 +28,13 @@ public class Lecture {
 
     public void setMaterial(String material) {
         this.material = material;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
