@@ -1,14 +1,13 @@
 package com.csye6225.fall2019.courseservice.resources;
 
 import com.csye6225.fall2019.courseservice.datamodel.Course;
-import com.csye6225.fall2019.courseservice.datamodel.Lecture;
 import com.csye6225.fall2019.courseservice.service.CoursesService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("courses")
+@Path("classes")
 public class CoursesResource {
     CoursesService cseService = new CoursesService();
 
@@ -22,7 +21,8 @@ public class CoursesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Course addCourse(Course cse) {
-        return cseService.addCourse(cse.getName(), cse.getLectures(), cse.getBoard(), cse.getRoster(), cse.getEnrolledStd(), cse.getProfessor(), cse.getTeachAssist());
+        return cseService.addCourse(cse.getCourseId(), cse.getProfessorId(), cse.getTaId(), cse.getDepartment(),
+                cse.getBoardId(), cse.getListOfRegisteredroster(), cse.getListOfRegisteredStudents());
     }
 
     @PUT

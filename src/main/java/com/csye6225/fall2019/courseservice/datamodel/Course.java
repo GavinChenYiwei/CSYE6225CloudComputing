@@ -5,26 +5,26 @@ import java.util.List;
 public class Course {
 
     private String id;
-    private String name;
-    private List<Lecture> lectures;
-    private String board;
-    private List<Student> roster;
-    private List<Student> enrolledStd;
-    private Professor professor;
-    private Student teachAssist;
+    private String courseId;
+    private String professorId;
+    private String taId;
+    private String department;
+    private String boardId;
+    private List<String> listOfRegisteredroster;
+    private List<String> listOfRegisteredStudents;
 
     public Course() {
     }
 
-    public Course(String name, List<Lecture> lectures, String board, List<Student> roster, List<Student> enrolledStd,
-                  Professor professor, Student teachAssist) {
-        this.name = name;
-        this.lectures = lectures;
-        this.board = board;
-        this.roster = roster;
-        this.enrolledStd = enrolledStd;
-        this.professor = professor;
-        this.teachAssist = teachAssist;
+    public Course(String courseId, String professorId, String taId, String department, String boardId,
+                  List<String> listOfRegisteredroster, List<String> listOfRegisteredStudents) {
+        this.courseId = courseId;
+        this.professorId = professorId;
+        this.taId = taId;
+        this.department = department;
+        this.boardId = boardId;
+        this.listOfRegisteredroster = listOfRegisteredroster;
+        this.listOfRegisteredStudents = listOfRegisteredStudents;
     }
 
     public String getId() {
@@ -35,59 +35,59 @@ public class Course {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
-    public List<Lecture> getLectures() {
-        return lectures;
+    public String getProfessorId() {
+        return professorId;
     }
 
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
+    public void setProfessorId(String professorId) {
+        this.professorId = professorId;
     }
 
-    public String getBoard() {
-        return board;
+    public String getTaId() {
+        return taId;
     }
 
-    public void setBoard(String board) {
-        this.board = board;
+    public void setTaId(String taId) {
+        this.taId = taId;
     }
 
-    public List<Student> getRoster() {
-        return roster;
+    public String getDepartment() {
+        return department;
     }
 
-    public void setRoster(List<Student> roster) {
-        this.roster = roster;
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
-    public List<Student> getEnrolledStd() {
-        return enrolledStd;
+    public String getBoardId() {
+        return boardId;
     }
 
-    public void setEnrolledStd(List<Student> enrolledStd) {
-        this.enrolledStd = enrolledStd;
+    public void setBoardId(String boardId) {
+        this.boardId = boardId;
     }
 
-    public Professor getProfessor() {
-        return professor;
+    public List<String> getListOfRegisteredroster() {
+        return listOfRegisteredroster;
     }
 
-    public void setProfessor(Professor professor) {
-        this.professor = professor;
+    public void setListOfRegisteredroster(List<String> listOfRegisteredroster) {
+        this.listOfRegisteredroster = listOfRegisteredroster;
     }
 
-    public Student getTeachAssist() {
-        return teachAssist;
+    public List<String> getListOfRegisteredStudents() {
+        return listOfRegisteredStudents;
     }
 
-    public void setTeachAssist(Student teachAssist) {
-        this.teachAssist = teachAssist;
+    public void setListOfRegisteredStudents(List<String> listOfRegisteredStudents) {
+        this.listOfRegisteredStudents = listOfRegisteredStudents;
     }
 }

@@ -1,10 +1,11 @@
 package com.csye6225.fall2019.courseservice.service;
 
-
-//import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-//import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-//import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
-//import com.csye6225.fall2019.courseservice.datamodel.DynamoDbConnector;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedParallelScanList;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.csye6225.fall2019.courseservice.datamodel.DynamoDbConnector;
 import com.csye6225.fall2019.courseservice.datamodel.InMemoryDatabase;
 import com.csye6225.fall2019.courseservice.datamodel.Professor;
 
@@ -12,11 +13,16 @@ import javax.ws.rs.ApplicationPath;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ProfessorsService {
-    static HashMap<Long, Professor> prof_Map = InMemoryDatabase.getProfessorDB();
+    static DynamoDbConnector dynamoDb;
+    DynamoDBMapper mapper;
 
     public ProfessorsService() {
+        dynamoDb = new DynamoDbConnector();
+        dynamoDb.init();
+        mapper = new DynamoDBMapper(dynamoDb.getClient());
     }
 
     // Getting a list of all professor
@@ -25,48 +31,47 @@ public class ProfessorsService {
     public ArrayList<Professor> getAllProfessors() {
         //Getting the list
         ArrayList<Professor> list = new ArrayList<Professor>();
-        for (Professor prof : prof_Map.values()) {
+        PaginatedScanList<Professor> profList = mapper.scan(Professor.class, new DynamoDBScanExpression());
+        for (Professor prof : profList) {
             list.add(prof);
         }
         return list ;
     }
 
     // Adding a professor
-    public Professor addProfessor(String firstName, String lastName, String department, Date joiningDate) {
-        // Next Id
-        long nextAvailableId = prof_Map.size() + 1;
+//    public Professor addProfessor(String firstName, String lastName, String department, String joiningDate) {
+//        // Next Id
+//        long nextAvailableId = prof_Map.size() + 1;
+//
+//        //Create a Professor Object
+//        Professor prof = new Professor(String.valueOf(nextAvailableId), firstName, lastName , department, joiningDate);
+//        prof_Map.put(nextAvailableId, prof);
+//        return prof;
+//    }
 
-        //Create a Professor Object
-        Professor prof = new Professor(firstName+lastName, firstName , lastName,
-                department, joiningDate.toString());
-        prof.setId(String.valueOf(nextAvailableId));
-        prof_Map.put(nextAvailableId, prof);
-
-        return prof_Map.get(nextAvailableId);
+    public Professor addProfessor(Professor prof) {
+        mapper.save(prof);
+        return prof;
     }
-
 
     // Getting One Professor
     public Professor getProfessor(String profId) {
-
-        //Simple HashKey Load
-        Professor prof2 = prof_Map.get(Long.valueOf(profId));
+        Professor prof2 = mapper.load(Professor.class, profId);
         System.out.println("Item retrieved:");
         System.out.println(prof2.toString());
-
         return prof2;
     }
 
     // Deleting a professor
     public Professor deleteProfessor(Long profId) {
-        Professor deletedProfDetails = prof_Map.get(profId);
-        prof_Map.remove(profId);
+        Professor deletedProfDetails = mapper.load(Professor.class, profId);
+        mapper.delete(deletedProfDetails);
         return deletedProfDetails;
     }
 
     // Updating Professor Info
     public Professor updateProfessorInformation(String profId, Professor prof) {
-        Professor oldProfObject = prof_Map.get(Long.valueOf(profId));
+        Professor oldProfObject = mapper.load(Professor.class, profId);
 //        profId = oldProfObject.getProfessorId();
 //        prof.setProfessorId(profId);
         oldProfObject.setFirstName(prof.getFirstName());
@@ -74,6 +79,7 @@ public class ProfessorsService {
         oldProfObject.setProfessorId(prof.getFirstName()+prof.getLastName());
         oldProfObject.setJoiningDate(prof.getJoiningDate());
         oldProfObject.setDepartment(prof.getDepartment());
+        mapper.save(prof);
         return prof;
     }
 
@@ -81,10 +87,13 @@ public class ProfessorsService {
     public ArrayList<Professor> getProfessorsByDepartment(String department) {
         //Getting the list
         ArrayList<Professor> list = new ArrayList<Professor>();
-        for (Professor prof : prof_Map.values()) {
-            if (prof.getDepartment().equals(department)) {
-                list.add(prof);
-            }
+        Map<String, AttributeValue> scanMap = new HashMap<>();
+        scanMap.put(":department", new AttributeValue().withS(department));
+        DynamoDBScanExpression expression = new DynamoDBScanExpression()
+                .withFilterExpression("department = :department").withExpressionAttributeValues(scanMap);
+        PaginatedScanList<Professor> scanList = mapper.scan(Professor.class, expression);
+        for (Professor prof : scanList) {
+            list.add(prof);
         }
         return list;
     }

@@ -41,7 +41,7 @@ public class ProfessorsResource {
     public List<Professor> getProfessorsByDeparment(
             @PathParam("departmentID") String department) {
 
-        if (department == null) {
+        if (department == null || department.length() == 0) {
             return profService.getAllProfessors();
         }
         return profService.getProfessorsByDepartment(department);
@@ -70,14 +70,7 @@ public class ProfessorsResource {
     public Professor addProfessor(Professor prof) {
         prof.setProfessorId(prof.getFirstName()+prof.getLastName());
         prof.setJoiningDate(new Date().toString());
-        //prof.setId(prof.getProfessorId());
-        Date profDate = new Date();
-        try {
-            profDate = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy").parse(prof.getJoiningDate());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return profService.addProfessor(prof.getFirstName(),prof.getLastName(),prof.getDepartment(), profDate);
+        return profService.addProfessor(prof);
     }
 
     @PUT
@@ -87,9 +80,5 @@ public class ProfessorsResource {
     public Professor updateProfessor(@PathParam("professorId") long profId,
                                      Professor prof) {
         return profService.updateProfessorInformation(String.valueOf(profId), prof);
-    }
-
-    public void addProfessor(String firstName, String lastName, String department, Date joiningDate) {
-        profService.addProfessor(firstName, lastName, department, joiningDate);
     }
 }

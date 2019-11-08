@@ -18,32 +18,28 @@ public class CoursesService {
     }
 
     // Adding a Course
-    public Course addCourse(String name, List<Lecture> lectures, String board, List<Student> roster,
-                            List<Student> enrolledStd,Professor professor, Student teachAssist) {
+    public Course addCourse(String courseId, String professorId, String taId, String department, String boardId,
+                            List<String> rosters, List<String> students) {
         // Next Id
         long nextAvailableId = cse_Map.size() + 1;
 
         //Create a Lecture Object
-        Course cse = new Course(name, lectures, board, roster, enrolledStd, professor, teachAssist);
+        Course cse = new Course(courseId, professorId, taId, department, boardId,
+                rosters, students);
         cse.setId(String.valueOf(nextAvailableId));
         cse_Map.put(nextAvailableId, cse);
         return cse_Map.get(nextAvailableId);
     }
 
-    // Updating Professor Info
+    // Updating Course Info
     public Course updateCourse(String cseId, Course cse) {
         Course oldCseObject = cse_Map.get(Long.valueOf(cseId));
-        oldCseObject.setBoard(cse.getBoard());
-        oldCseObject.setEnrolledStd(cse.getEnrolledStd());
-        oldCseObject.setLectures(cse.getLectures());
-        oldCseObject.setName(cse.getName());
-        oldCseObject.setRoster(cse.getRoster());
-        oldCseObject.setTeachAssist(oldCseObject.getTeachAssist());
-        oldCseObject.setProfessor(cse.getProfessor());
+        // Todo
+
         return oldCseObject;
     }
 
-    // Deleting a Lecture
+    // Deleting a Course
     public Course deleteCourse (Long cseId) {
         Course deletedCseDetails = cse_Map.get(cseId);
         cse_Map.remove(cseId);
