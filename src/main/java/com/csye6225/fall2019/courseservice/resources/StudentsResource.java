@@ -5,6 +5,7 @@ import com.csye6225.fall2019.courseservice.service.StudentsService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.Date;
 import java.util.List;
 
 @Path("students")
@@ -21,23 +22,24 @@ public class StudentsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Student addStudent(Student std) {
-        return stdService.addStudent(std.getStudentId(), std.getFirstName(), std.getLastName(), std.getJoiningDate(),
-                std.getDepartment(), std.getRegisteredCourses());
+        std.setStudentId(std.getFirstName() + std.getLastName());
+        std.setJoiningDate(new Date().toString());
+        return stdService.addStudent(std);
     }
 
     @PUT
     @Path("/{studentId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Student updateStudent(@PathParam("studentId") long stdId,
+    public Student updateStudent(@PathParam("studentId") String stdId,
                                  Student std) {
-        return stdService.updateStudent(String.valueOf(stdId), std);
+        return stdService.updateStudent(stdId, std);
     }
 
     @DELETE
     @Path("/{studentId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Student deleteStudent(@PathParam("studentId") long stdId) {
+    public Student deleteStudent(@PathParam("studentId") String stdId) {
         return stdService.deleteStudent(stdId);
     }
 }

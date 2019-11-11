@@ -1,5 +1,8 @@
 package com.csye6225.fall2019.courseservice.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.csye6225.fall2019.courseservice.datamodel.*;
 
 import java.util.ArrayList;
@@ -7,42 +10,46 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CoursesService {
-    static HashMap<Long, Course> cse_Map = InMemoryDatabase.getCourseDB();
+    static DynamoDbConnector dynamoDb;
+    DynamoDBMapper mapper;
+
+    public CoursesService(){
+        dynamoDb = new DynamoDbConnector();
+        dynamoDb.init();
+        mapper = new DynamoDBMapper(dynamoDb.getClient());
+    }
 
     public List<Course> getAllCourse() {
         ArrayList<Course> list = new ArrayList<>();
-        for(Course course: cse_Map.values()){
+        PaginatedScanList<Course> cseList = mapper.scan(Course.class, new DynamoDBScanExpression());
+        for(Course course: cseList){
             list.add(course);
         }
         return list;
     }
 
-    // Adding a Course
-    public Course addCourse(String courseId, String professorId, String taId, String department, String boardId,
-                            List<String> rosters, List<String> students) {
-        // Next Id
-        long nextAvailableId = cse_Map.size() + 1;
-
-        //Create a Lecture Object
-        Course cse = new Course(courseId, professorId, taId, department, boardId,
-                rosters, students);
-        cse.setId(String.valueOf(nextAvailableId));
-        cse_Map.put(nextAvailableId, cse);
-        return cse_Map.get(nextAvailableId);
+    public Course addCourse(Course course){
+        mapper.save(course);
+        return course;
     }
 
     // Updating Course Info
     public Course updateCourse(String cseId, Course cse) {
-        Course oldCseObject = cse_Map.get(Long.valueOf(cseId));
-        // Todo
-
+        Course oldCseObject = mapper.load(Course.class, cseId);
+        oldCseObject.setBoardId(cse.getBoardId());
+        oldCseObject.setCourseId(cse.getCourseId());
+        oldCseObject.setDepartment(cse.getDepartment());
+        oldCseObject.setListOfRegisteredroster(cse.getListOfRegisteredroster());
+        oldCseObject.setListOfRegisteredStudents(cse.getListOfRegisteredStudents());
+        oldCseObject.setTaId(cse.getTaId());
+        oldCseObject.setProfessorId(cse.getProfessorId());
         return oldCseObject;
     }
 
     // Deleting a Course
-    public Course deleteCourse (Long cseId) {
-        Course deletedCseDetails = cse_Map.get(cseId);
-        cse_Map.remove(cseId);
+    public Course deleteCourse (String cseId) {
+        Course deletedCseDetails = mapper.load(Course.class, cseId);
+        mapper.delete(deletedCseDetails);
         return deletedCseDetails;
     }
 }

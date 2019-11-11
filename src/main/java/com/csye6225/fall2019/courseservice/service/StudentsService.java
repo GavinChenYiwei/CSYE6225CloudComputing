@@ -1,5 +1,8 @@
 package com.csye6225.fall2019.courseservice.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.csye6225.fall2019.courseservice.datamodel.*;
 
 import java.util.ArrayList;
@@ -7,41 +10,47 @@ import java.util.HashMap;
 import java.util.List;
 
 public class StudentsService {
-    static HashMap<Long, Student> std_Map = InMemoryDatabase.getStudentDB();
+    static DynamoDbConnector dynamoDb;
+    DynamoDBMapper mapper;
+
+    public StudentsService(){
+        dynamoDb = new DynamoDbConnector();
+        dynamoDb.init();
+        mapper = new DynamoDBMapper(dynamoDb.getClient());
+    }
 
     public List<Student> getAllStudent() {
         ArrayList<Student> list = new ArrayList<>();
-        for(Student student: std_Map.values()){
+        PaginatedScanList<Student> stdList = mapper.scan(Student.class, new DynamoDBScanExpression());
+        for(Student student: stdList){
             list.add(student);
         }
         return list;
     }
 
     // Adding a Student
-    public Student addStudent(String studentID, String firstName, String lastName, String joiningDate,
-                              String department, List<String> courses) {
-        // Next Id
-        long nextAvailableId = std_Map.size() + 1;
-
-        //Create a Student Object
-        Student std = new Student(studentID, firstName, lastName, joiningDate, department, courses);
-        std.setId(String.valueOf(nextAvailableId));
-        std_Map.put(nextAvailableId, std);
-        return std_Map.get(nextAvailableId);
+    public Student addStudent(Student std) {
+        mapper.save(std);
+        return std;
     }
 
     // Updating Student Info
     public Student updateStudent(String stdId, Student std) {
-        Student oldStdObject = std_Map.get(Long.valueOf(stdId));
-        //Todo
-
+        Student oldStdObject = mapper.load(Student.class, stdId);
+        oldStdObject.setFirstName(std.getFirstName());
+        oldStdObject.setLastName(std.getLastName());
+        oldStdObject.setStudentId(oldStdObject.getFirstName()+oldStdObject.getLastName());
+        oldStdObject.setJoiningDate(std.getJoiningDate());
+        oldStdObject.setDepartment(std.getDepartment());
+        oldStdObject.setRegisteredCourses(std.getRegisteredCourses());
+        mapper.save(oldStdObject);
         return oldStdObject;
     }
 
     // Deleting a Student
-    public Student deleteStudent (Long stdId) {
-        Student deletedStdDetails = std_Map.get(stdId);
-        std_Map.remove(stdId);
+    public Student deleteStudent (String stdId) {
+        Student deletedStdDetails = mapper.load(Student.class, stdId);
+        mapper.delete(deletedStdDetails);
         return deletedStdDetails;
     }
 }

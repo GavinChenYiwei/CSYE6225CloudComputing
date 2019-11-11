@@ -21,15 +21,14 @@ public class CoursesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Course addCourse(Course cse) {
-        return cseService.addCourse(cse.getCourseId(), cse.getProfessorId(), cse.getTaId(), cse.getDepartment(),
-                cse.getBoardId(), cse.getListOfRegisteredroster(), cse.getListOfRegisteredStudents());
+        return cseService.addCourse(cse);
     }
 
     @PUT
     @Path("/{courseId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Course updateCourse(@PathParam("courseId") long cseId,
+    public Course updateCourse(@PathParam("courseId") String cseId,
                                  Course cse) {
         return cseService.updateCourse(String.valueOf(cseId), cse);
     }
@@ -37,7 +36,7 @@ public class CoursesResource {
     @DELETE
     @Path("/{courseId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Course deleteCourse(@PathParam("courseId") long cseId) {
+    public Course deleteCourse(@PathParam("courseId") String cseId) {
         return cseService.deleteCourse(cseId);
     }
 }

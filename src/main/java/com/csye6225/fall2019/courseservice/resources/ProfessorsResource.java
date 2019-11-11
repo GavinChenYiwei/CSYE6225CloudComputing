@@ -1,8 +1,5 @@
 package com.csye6225.fall2019.courseservice.resources;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,13 +11,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.csye6225.fall2019.courseservice.datamodel.InMemoryDatabase;
 import com.csye6225.fall2019.courseservice.datamodel.Professor;
 import com.csye6225.fall2019.courseservice.service.ProfessorsService;
-import org.glassfish.hk2.api.PerThread;
 
 //../webapi/professors
 @Path("professors")
@@ -60,7 +54,7 @@ public class ProfessorsResource {
     @DELETE
     @Path("/{professorId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Professor deleteProfessor(@PathParam("professorId") long profId) {
+    public Professor deleteProfessor(@PathParam("professorId") String profId) {
         return profService.deleteProfessor(profId);
     }
 
@@ -77,7 +71,7 @@ public class ProfessorsResource {
     @Path("/{professorId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Professor updateProfessor(@PathParam("professorId") long profId,
+    public Professor updateProfessor(@PathParam("professorId") String profId,
                                      Professor prof) {
         return profService.updateProfessorInformation(String.valueOf(profId), prof);
     }

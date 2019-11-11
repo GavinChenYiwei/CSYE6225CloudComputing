@@ -2,16 +2,12 @@ package com.csye6225.fall2019.courseservice.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedParallelScanList;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.csye6225.fall2019.courseservice.datamodel.DynamoDbConnector;
-import com.csye6225.fall2019.courseservice.datamodel.InMemoryDatabase;
 import com.csye6225.fall2019.courseservice.datamodel.Professor;
 
-import javax.ws.rs.ApplicationPath;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,17 +34,6 @@ public class ProfessorsService {
         return list ;
     }
 
-    // Adding a professor
-//    public Professor addProfessor(String firstName, String lastName, String department, String joiningDate) {
-//        // Next Id
-//        long nextAvailableId = prof_Map.size() + 1;
-//
-//        //Create a Professor Object
-//        Professor prof = new Professor(String.valueOf(nextAvailableId), firstName, lastName , department, joiningDate);
-//        prof_Map.put(nextAvailableId, prof);
-//        return prof;
-//    }
-
     public Professor addProfessor(Professor prof) {
         mapper.save(prof);
         return prof;
@@ -63,7 +48,7 @@ public class ProfessorsService {
     }
 
     // Deleting a professor
-    public Professor deleteProfessor(Long profId) {
+    public Professor deleteProfessor(String profId) {
         Professor deletedProfDetails = mapper.load(Professor.class, profId);
         mapper.delete(deletedProfDetails);
         return deletedProfDetails;
@@ -72,14 +57,12 @@ public class ProfessorsService {
     // Updating Professor Info
     public Professor updateProfessorInformation(String profId, Professor prof) {
         Professor oldProfObject = mapper.load(Professor.class, profId);
-//        profId = oldProfObject.getProfessorId();
-//        prof.setProfessorId(profId);
         oldProfObject.setFirstName(prof.getFirstName());
         oldProfObject.setLastName(prof.getLastName());
         oldProfObject.setProfessorId(prof.getFirstName()+prof.getLastName());
         oldProfObject.setJoiningDate(prof.getJoiningDate());
         oldProfObject.setDepartment(prof.getDepartment());
-        mapper.save(prof);
+        mapper.save(oldProfObject);
         return prof;
     }
 
